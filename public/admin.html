@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <div id="login-section">
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+    <div id="admin-section" style="display:none;">
+        <div class="teams-container">
+            <div class="team">
+                <div class="team-name">
+                    <input type="text" id="team1-name-input" value="隊伍1" onchange="setTeamName('team1')" />
+                </div>
+                <div class="score-control">
+                    <button onclick="updateScore('team1', -1)">-</button>
+                    <input type="number" id="team1-score" value="0" onchange="setScore('team1')" />
+                    <button onclick="updateScore('team1', 1)">+</button>
+                </div>
+            </div>
+            <div class="team">
+                <div class="team-name">
+                    <input type="text" id="team2-name-input" value="隊伍2" onchange="setTeamName('team2')" />
+                </div>
+                <div class="score-control">
+                    <button onclick="updateScore('team2', -1)">-</button>
+                    <input type="number" id="team2-score" value="0" onchange="setScore('team2')" />
+                    <button onclick="updateScore('team2', 1)">+</button>
+                </div>
+            </div>
+        </div>
+        <button onclick="resetScores()">Reset Scores</button>
+    </div>
+
+    <script>
+        let currentPassword = '';
+
+        document.getElementById('password').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                login();
+            }
+        });
+
+        async function login() {
+            currentPassword = document.getElementById('password').value;
+            const response = await fetch('/api/scores');
+            if (response.ok) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('admin-section').style.display = 'block';
+                fetchScores();
+            } else {
+                alert('Login failed. Please check your password.');
+            }
+        }
+
+        async function fetchScores() {
+            try {
+                const response = await fetch('/api/scores');
+                const scores = await response.json();
+                document.getElementById('team1-score').value = scores.team1;
+                document.getElementById('team2-score').value = scores.team2;
+                document.getElementById('team1-name-input').value = scores.team1Name;
+                document.getElementById('team2-name-input').value = scores.team2Name;
+            } catch (error) {
+                console.error('Error fetching scores:', error);
+            }
+        }
+
+        async function updateScore(team, change) {
+            let currentScore = parseInt(document.getElementById(`${team}-score`).value);
+            currentScore += change;
+
+            const body = { password: currentPassword };
+            body[team] = currentScore;
+
+            try {
+                await fetch('/api/scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                document.getElementById(`${team}-score`).value = currentScore;
+            } catch (error) {
+                console.error('Error updating scores:', error);
+                alert('Failed to update scores.');
+            }
+        }
+
+        async function setScore(team) {
+            const newScore = parseInt(document.getElementById(`${team}-score`).value);
+
+            const body = { password: currentPassword };
+            body[team] = newScore;
+
+            try {
+                await fetch('/api/scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+            } catch (error) {
+                console.error('Error updating scores:', error);
+                alert('Failed to update scores.');
+            }
+        }
+
+        async function setTeamName(team) {
+            const newName = document.getElementById(`${team}-name-input`).value;
+
+            const body = { password: currentPassword };
+            body[`${team}Name`] = newName;
+
+            try {
+                await fetch('/api/scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+            } catch (error) {
+                console.error('Error updating team name:', error);
+                alert('Failed to update team name.');
+            }
+        }
+
+        async function resetScores() {
+            try {
+                await fetch('/api/scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ team1: 0, team2: 0, team1Name: "隊伍1", team2Name: "隊伍2", password: currentPassword })
+                });
+                document.getElementById('team1-score').value = 0;
+                document.getElementById('team2-score').value = 0;
+                document.getElementById('team1-name-input').value = "隊伍1";
+                document.getElementById('team2-name-input').value = "隊伍2";
+            } catch (error) {
+                console.error('Error resetting scores:', error);
+                alert('Failed to reset scores.');
+            }
+        }
+
+        const ws = new WebSocket('ws://localhost:3001');
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            document.getElementById('team1-score').value = data.team1;
+            document.getElementById('team2-score').value = data.team2;
+            document.getElementById('team1-name-input').value = data.team1Name;
+            document.getElementById('team2-name-input').value = data.team2Name;
+        };
+
+        ws.onopen = () => {
+            console.log('WebSocket connection opened');
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+    </script>
+</body>
+</html>

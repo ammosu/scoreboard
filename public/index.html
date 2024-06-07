@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Scoreboard</h1>
+    <div id="scoreboard">
+        <div class="team">
+            <div class="team-name" id="team1-name">隊伍1</div>
+            <div class="team-score" id="team1-score">
+                <div class="digit">0</div>
+                <div class="digit">0</div>
+            </div>
+        </div>
+        <div class="team">
+            <div class="team-name" id="team2-name">隊伍2</div>
+            <div class="team-score" id="team2-score">
+                <div class="digit">0</div>
+                <div class="digit">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateScore(elementId, score) {
+            const scoreStr = score.toString().padStart(2, '0');
+            document.getElementById(elementId).children[0].innerText = scoreStr[0];
+            document.getElementById(elementId).children[1].innerText = scoreStr[1];
+        }
+
+        function updateName(elementId, name) {
+            document.getElementById(elementId).innerText = name;
+        }
+
+        const ws = new WebSocket('ws://localhost:3001');
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            updateScore('team1-score', data.team1);
+            updateScore('team2-score', data.team2);
+            updateName('team1-name', data.team1Name);
+            updateName('team2-name', data.team2Name);
+        };
+
+        ws.onopen = () => {
+            console.log('WebSocket connection opened');
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+    </script>
+</body>
+</html>
