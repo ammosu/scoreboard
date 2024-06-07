@@ -6,8 +6,9 @@ body {
 #scoreboard {
     margin-top: 50px;
     display: flex;
-    justify-content: center;
-    gap: 40px;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
 }
 
 .team {
@@ -38,4 +39,16 @@ body {
 
 #team1-score .digit {
     background-color: blue;
+}
+
+.team-wins {
+    font-size: 2em;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    color: white;
+    border-radius: 5px;
 }

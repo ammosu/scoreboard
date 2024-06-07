@@ -26,6 +26,12 @@
                     <input type="number" id="team1-score" value="0" onchange="setScore('team1')" />
                     <button onclick="updateScore('team1', 1)">+</button>
                 </div>
+                <div class="wins-control">
+                    勝場數：
+                    <button onclick="updateWins('team1', -1)">-</button>
+                    <input type="number" id="team1-wins" value="0" onchange="setWins('team1')" />
+                    <button onclick="updateWins('team1', 1)">+</button>
+                </div>
             </div>
             <div class="team">
                 <div class="team-name">
@@ -35,6 +41,12 @@
                     <button onclick="updateScore('team2', -1)">-</button>
                     <input type="number" id="team2-score" value="0" onchange="setScore('team2')" />
                     <button onclick="updateScore('team2', 1)">+</button>
+                </div>
+                <div class="wins-control">
+                    勝場數：
+                    <button onclick="updateWins('team2', -1)">-</button>
+                    <input type="number" id="team2-wins" value="0" onchange="setWins('team2')" />
+                    <button onclick="updateWins('team2', 1)">+</button>
                 </div>
             </div>
         </div>
@@ -68,6 +80,8 @@
                 const scores = await response.json();
                 document.getElementById('team1-score').value = scores.team1;
                 document.getElementById('team2-score').value = scores.team2;
+                document.getElementById('team1-wins').value = scores.team1Wins;
+                document.getElementById('team2-wins').value = scores.team2Wins;
                 document.getElementById('team1-name-input').value = scores.team1Name;
                 document.getElementById('team2-name-input').value = scores.team2Name;
             } catch (error) {
@@ -117,6 +131,48 @@
             }
         }
 
+        async function updateWins(team, change) {
+            let currentWins = parseInt(document.getElementById(`${team}-wins`).value);
+            currentWins += change;
+
+            const body = { password: currentPassword };
+            body[`${team}Wins`] = currentWins;
+
+            try {
+                await fetch('/api/scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                document.getElementById(`${team}-wins`).value = currentWins;
+            } catch (error) {
+                console.error('Error updating wins:', error);
+                alert('Failed to update wins.');
+            }
+        }
+
+        async function setWins(team) {
+            const newWins = parseInt(document.getElementById(`${team}-wins`).value);
+
+            const body = { password: currentPassword };
+            body[`${team}Wins`] = newWins;
+
+            try {
+                await fetch('/api/scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+            } catch (error) {
+                console.error('Error updating wins:', error);
+                alert('Failed to update wins.');
+            }
+        }
+
         async function setTeamName(team) {
             const newName = document.getElementById(`${team}-name-input`).value;
 
@@ -144,10 +200,20 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ team1: 0, team2: 0, team1Name: "隊伍1", team2Name: "隊伍2", password: currentPassword })
+                    body: JSON.stringify({
+                        team1: 0,
+                        team2: 0,
+                        team1Wins: 0,
+                        team2Wins: 0,
+                        team1Name: "隊伍1",
+                        team2Name: "隊伍2",
+                        password: currentPassword
+                    })
                 });
                 document.getElementById('team1-score').value = 0;
                 document.getElementById('team2-score').value = 0;
+                document.getElementById('team1-wins').value = 0;
+                document.getElementById('team2-wins').value = 0;
                 document.getElementById('team1-name-input').value = "隊伍1";
                 document.getElementById('team2-name-input').value = "隊伍2";
             } catch (error) {
@@ -162,6 +228,8 @@
             const data = JSON.parse(event.data);
             document.getElementById('team1-score').value = data.team1;
             document.getElementById('team2-score').value = data.team2;
+            document.getElementById('team1-wins').value = data.team1Wins;
+            document.getElementById('team2-wins').value = data.team2Wins;
             document.getElementById('team1-name-input').value = data.team1Name;
             document.getElementById('team2-name-input').value = data.team2Name;
         };

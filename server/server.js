@@ -28,7 +28,7 @@ app.get('/api/scores', (req, res) => {
 });
 
 app.post('/api/scores', (req, res) => {
-    const { team1, team2, team1Name, team2Name, password } = req.body;
+    const { team1, team2, team1Wins, team2Wins, team1Name, team2Name, password } = req.body;
 
     if (password !== adminPassword) {
         res.status(401).json({ message: 'Unauthorized' });
@@ -47,6 +47,8 @@ app.post('/api/scores', (req, res) => {
         // 更新分數和隊伍名稱
         if (team1 !== undefined) scores.team1 = team1;
         if (team2 !== undefined) scores.team2 = team2;
+        if (team1Wins !== undefined) scores.team1Wins = team1Wins;
+        if (team2Wins !== undefined) scores.team2Wins = team2Wins;
         if (team1Name !== undefined) scores.team1Name = team1Name;
         if (team2Name !== undefined) scores.team2Name = team2Name;
 

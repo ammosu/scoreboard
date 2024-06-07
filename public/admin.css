@@ -18,7 +18,8 @@ body {
     margin-bottom: 10px;
 }
 
-.score-control {
+.score-control,
+.wins-control {
     display: inline-flex;
     align-items: center;
     gap: 10px;

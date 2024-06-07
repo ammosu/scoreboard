@@ -16,6 +16,8 @@
                 <div class="digit">0</div>
             </div>
         </div>
+        <div class="team-wins" id="team1-wins">0</div>
+        <div class="team-wins" id="team2-wins">0</div>
         <div class="team">
             <div class="team-name" id="team2-name">隊伍2</div>
             <div class="team-score" id="team2-score">
@@ -36,6 +38,10 @@
             document.getElementById(elementId).innerText = name;
         }
 
+        function updateWins(elementId, wins) {
+            document.getElementById(elementId).innerText = wins;
+        }
+
         const ws = new WebSocket('ws://localhost:3001');
 
         ws.onmessage = (event) => {
@@ -44,6 +50,8 @@
             updateScore('team2-score', data.team2);
             updateName('team1-name', data.team1Name);
             updateName('team2-name', data.team2Name);
+            updateWins('team1-wins', data.team1Wins);
+            updateWins('team2-wins', data.team2Wins);
         };
 
         ws.onopen = () => {
