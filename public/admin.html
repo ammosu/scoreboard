@@ -17,6 +17,72 @@
     </div>
     <div id="admin-section" style="display:none;">
         <div class="card">
+            <button class="btn" onclick="showMatchModal()">管理比賽</button>
+            <div class="card">
+                <h2>比賽列表</h2>
+                <ul id="matches-list" class="list-group">
+                    <!-- 比賽列表 -->
+                </ul>
+            </div>
+            <div id="scoring-section" class="card" style="display:none;">
+                <h2>比賽計分</h2>
+                <input type="hidden" id="match-id" value="">
+                <div class="teams-container">
+                    <div class="team-card">
+                        <div class="team-header">
+                            <h3>隊伍1</h3>
+                            <input type="text" id="team1-name-input" class="team-name-input" value="隊伍1" onchange="setTeamName('team1')" />
+                        </div>
+                        <div class="score-control">
+                            <label for="team1-score">分數</label>
+                            <div class="score-buttons">
+                                <button class="btn" onclick="updateScore('team1', -1)">-</button>
+                                <input type="number" id="team1-score" class="score-input" value="0" onchange="setScore('team1')" />
+                                <button class="btn" onclick="updateScore('team1', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="wins-control">
+                            <label for="team1-wins">勝場數</label>
+                            <div class="score-buttons">
+                                <button class="btn" onclick="updateWins('team1', -1)">-</button>
+                                <input type="number" id="team1-wins" class="score-input" value="0" onchange="setWins('team1')" />
+                                <button class="btn" onclick="updateWins('team1', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-header">
+                            <h3>隊伍2</h3>
+                            <input type="text" id="team2-name-input" class="team-name-input" value="隊伍2" onchange="setTeamName('team2')" />
+                        </div>
+                        <div class="score-control">
+                            <label for="team2-score">分數</label>
+                            <div class="score-buttons">
+                                <button class="btn" onclick="updateScore('team2', -1)">-</button>
+                                <input type="number" id="team2-score" class="score-input" value="0" onchange="setScore('team2')" />
+                                <button class="btn" onclick="updateScore('team2', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="wins-control">
+                            <label for="team2-wins">勝場數</label>
+                            <div class="score-buttons">
+                                <button class="btn" onclick="updateWins('team2', -1)">-</button>
+                                <input type="number" id="team2-wins" class="score-input" value="0" onchange="setWins('team2')" />
+                                <button class="btn" onclick="updateWins('team2', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn reset-btn" onclick="resetScores()">重置分數</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 比賽管理模態框 -->
+    <div id="match-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMatchModal()">&times;</span>
+            <h2>管理比賽</h2>
             <div class="form-group">
                 <label for="new-match-team1">隊伍1名稱:</label>
                 <input type="text" id="new-match-team1" required>
@@ -28,16 +94,6 @@
                 <input type="time" id="match-end-time" required>
                 <button class="btn" onclick="addMatch()">新增比賽</button>
             </div>
-        </div>
-        <div class="card">
-            <h2>比賽列表</h2>
-            <ul id="matches-list" class="list-group">
-                <!-- 比賽列表 -->
-            </ul>
-        </div>
-        <div id="scoring-section" class="card" style="display:none;">
-            <h2>比賽計分</h2>
-            <input type="hidden" id="match-id" value="">
             <div class="form-group">
                 <label for="edit-match-start-time">修改開始時間:</label>
                 <input type="time" id="edit-match-start-time">
@@ -46,53 +102,6 @@
                 <button class="btn" onclick="editMatchTime()">修改時間</button>
                 <button class="btn" onclick="deleteMatch()">刪除比賽</button>
             </div>
-            <div class="teams-container">
-                <div class="team">
-                    <div class="team-name">
-                        <label for="team1-name-input">隊伍1名稱</label>
-                        <input type="text" id="team1-name-input" value="隊伍1" onchange="setTeamName('team1')" />
-                    </div>
-                    <div class="score-control">
-                        <label for="team1-score">隊伍1分數</label>
-                        <div class="score-buttons">
-                            <button class="btn" onclick="updateScore('team1', -1)">-</button>
-                            <input type="number" id="team1-score" value="0" onchange="setScore('team1')" />
-                            <button class="btn" onclick="updateScore('team1', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="wins-control">
-                        <label for="team1-wins">勝場數</label>
-                        <div class="score-buttons">
-                            <button class="btn" onclick="updateWins('team1', -1)">-</button>
-                            <input type="number" id="team1-wins" value="0" onchange="setWins('team1')" />
-                            <button class="btn" onclick="updateWins('team1', 1)">+</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="team">
-                    <div class="team-name">
-                        <label for="team2-name-input">隊伍2名稱</label>
-                        <input type="text" id="team2-name-input" value="隊伍2" onchange="setTeamName('team2')" />
-                    </div>
-                    <div class="score-control">
-                        <label for="team2-score">隊伍2分數</label>
-                        <div class="score-buttons">
-                            <button class="btn" onclick="updateScore('team2', -1)">-</button>
-                            <input type="number" id="team2-score" value="0" onchange="setScore('team2')" />
-                            <button class="btn" onclick="updateScore('team2', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="wins-control">
-                        <label for="team2-wins">勝場數</label>
-                        <div class="score-buttons">
-                            <button class="btn" onclick="updateWins('team2', -1)">-</button>
-                            <input type="number" id="team2-wins" value="0" onchange="setWins('team2')" />
-                            <button class="btn" onclick="updateWins('team2', 1)">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="btn" onclick="resetScores()">Reset Scores</button>
         </div>
     </div>
 
@@ -177,6 +186,7 @@
 
             await updateMatches();
             renderMatches();
+            closeMatchModal();
         }
 
         async function editMatchTime() {
@@ -308,6 +318,14 @@
                 await updateMatches();
                 selectMatch(matchId); // 更新選定的比賽顯示
             }
+        }
+
+        function showMatchModal() {
+            document.getElementById('match-modal').style.display = 'block';
+        }
+
+        function closeMatchModal() {
+            document.getElementById('match-modal').style.display = 'none';
         }
 
         const ws = new WebSocket('ws://localhost:3001');
