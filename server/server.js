@@ -9,17 +9,17 @@ const app = express();
 const port = 3000;
 const wsPort = 3001;
 
-const scoresFilePath = path.join(__dirname, 'data', 'scores.json');
+const matchesFilePath = path.join(__dirname, 'data', 'matches.json');
 const adminPassword = "admin123"; // 簡單的靜態密碼，僅示範用途
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.get('/api/scores', (req, res) => {
-    fs.readFile(scoresFilePath, 'utf8', (err, data) => {
+app.get('/api/matches', (req, res) => {
+    fs.readFile(matchesFilePath, 'utf8', (err, data) => {
         if (err) {
-            console.error('Error reading scores file:', err);
+            console.error('Error reading matches file:', err);
             res.sendStatus(500);
             return;
         }
@@ -27,47 +27,63 @@ app.get('/api/scores', (req, res) => {
     });
 });
 
-app.post('/api/scores', (req, res) => {
-    const { team1, team2, team1Wins, team2Wins, team1Name, team2Name, password } = req.body;
+app.post('/api/matches', (req, res) => {
+    const { matches, password } = req.body;
 
     if (password !== adminPassword) {
         res.status(401).json({ message: 'Unauthorized' });
         return;
     }
 
-    fs.readFile(scoresFilePath, 'utf8', (err, data) => {
+    fs.writeFile(matchesFilePath, JSON.stringify(matches), (err) => {
         if (err) {
-            console.error('Error reading scores file:', err);
+            console.error('Error writing matches file:', err);
             res.sendStatus(500);
             return;
         }
 
-        const scores = JSON.parse(data);
+        notifyClients(matches); // 通知所有客戶端
+        res.sendStatus(200);
+    });
+});
 
-        // 更新分數和隊伍名稱
-        if (team1 !== undefined) scores.team1 = team1;
-        if (team2 !== undefined) scores.team2 = team2;
-        if (team1Wins !== undefined) scores.team1Wins = team1Wins;
-        if (team2Wins !== undefined) scores.team2Wins = team2Wins;
-        if (team1Name !== undefined) scores.team1Name = team1Name;
-        if (team2Name !== undefined) scores.team2Name = team2Name;
+app.post('/api/scores', (req, res) => {
+    const { matchId, team1Score, team2Score, team1Wins, team2Wins, password } = req.body;
 
-        fs.writeFile(scoresFilePath, JSON.stringify(scores), (err) => {
-            if (err) {
-                console.error('Error writing scores file:', err);
-                res.sendStatus(500);
-                return;
-            }
+    if (password !== adminPassword) {
+        res.status(401).json({ message: 'Unauthorized' });
+        return;
+    }
 
-            // 通知所有WebSocket客戶端分數和名稱已更新
-            wss.clients.forEach(client => {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify(scores));
+    fs.readFile(matchesFilePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading matches file:', err);
+            res.sendStatus(500);
+            return;
+        }
+
+        const matches = JSON.parse(data);
+        const match = matches.find(m => m.id === matchId);
+
+        if (match) {
+            if (team1Score !== undefined) match.team1Score = team1Score;
+            if (team2Score !== undefined) match.team2Score = team2Score;
+            if (team1Wins !== undefined) match.team1Wins = team1Wins;
+            if (team2Wins !== undefined) match.team2Wins = team2Wins;
+
+            fs.writeFile(matchesFilePath, JSON.stringify(matches), (err) => {
+                if (err) {
+                    console.error('Error writing matches file:', err);
+                    res.sendStatus(500);
+                    return;
                 }
-            });
 
-            res.sendStatus(200);
-        });
+                notifyClients(matches); // 通知所有客戶端
+                res.sendStatus(200);
+            });
+        } else {
+            res.status(404).json({ message: 'Match not found' });
+        }
     });
 });
 
@@ -79,9 +95,17 @@ const wss = new WebSocket.Server({ port: wsPort });
 
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
-    fs.readFile(scoresFilePath, 'utf8', (err, data) => {
+    fs.readFile(matchesFilePath, 'utf8', (err, data) => {
         if (!err) {
             ws.send(data);
         }
     });
 });
+
+function notifyClients(matches) {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(matches));
+        }
+    });
+}

@@ -1,54 +1,74 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    margin: 20px;
+    background-color: #f7f7f7;
 }
 
-#scoreboard {
-    margin-top: 50px;
+h1 {
+    color: #333;
+}
+
+.scoreboard-container {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 20px;
+    justify-content: center;
 }
 
-.team {
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
     text-align: center;
 }
 
-.team-name {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.team-score {
-    display: flex;
-    gap: 5px;
+th {
+    background-color: #4CAF50;
+    color: white;
 }
 
 .digit {
-    font-size: 3em;
-    width: 50px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: red;
-    color: white;
-    border-radius: 5px;
-}
-
-#team1-score .digit {
-    background-color: blue;
-}
-
-.team-wins {
+    display: inline-block;
     font-size: 2em;
-    width: 50px;
+    width: 30px;
     height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: gray;
-    color: white;
-    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    margin: 0 2px;
+    text-align: center;
+    line-height: 50px;
+    border-radius: 4px;
+}
+
+.wins-digit {
+    display: inline-block;
+    font-size: 1.5em;
+    width: 25px;
+    height: 35px;
+    background-color: #D2B48C; /* 土黃色或亮咖啡色 */
+    color: #fff;
+    margin: 0 2px;
+    text-align: center;
+    line-height: 35px;
+    border-radius: 4px;
+}
+
+#scoreboard tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#scoreboard tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+td[rowspan="2"] {
+    vertical-align: middle;
 }

@@ -8,30 +8,31 @@
 </head>
 <body>
     <h1>Scoreboard</h1>
-    <div id="scoreboard">
-        <div class="team">
-            <div class="team-name" id="team1-name">隊伍1</div>
-            <div class="team-score" id="team1-score">
-                <div class="digit">0</div>
-                <div class="digit">0</div>
-            </div>
-        </div>
-        <div class="team-wins" id="team1-wins">0</div>
-        <div class="team-wins" id="team2-wins">0</div>
-        <div class="team">
-            <div class="team-name" id="team2-name">隊伍2</div>
-            <div class="team-score" id="team2-score">
-                <div class="digit">0</div>
-                <div class="digit">0</div>
-            </div>
-        </div>
+    <div class="scoreboard-container">
+        <table id="scoreboard">
+            <thead>
+                <tr>
+                    <th>比賽時間</th>
+                    <th>隊伍名稱</th>
+                    <th>勝場數</th>
+                    <th>分數</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 比賽列表 -->
+            </tbody>
+        </table>
     </div>
 
     <script>
+        let matches = [];
+
         function updateScore(elementId, score) {
             const scoreStr = score.toString().padStart(2, '0');
-            document.getElementById(elementId).children[0].innerText = scoreStr[0];
-            document.getElementById(elementId).children[1].innerText = scoreStr[1];
+            document.getElementById(elementId).innerHTML = `
+                <div class="digit">${scoreStr[0]}</div>
+                <div class="digit">${scoreStr[1]}</div>
+            `;
         }
 
         function updateName(elementId, name) {
@@ -39,19 +40,75 @@
         }
 
         function updateWins(elementId, wins) {
-            document.getElementById(elementId).innerText = wins;
+            document.getElementById(elementId).innerHTML = `
+                <div class="wins-digit">${wins}</div>
+            `;
+        }
+
+        function renderMatches() {
+            const scoreboardBody = document.getElementById('scoreboard').getElementsByTagName('tbody')[0];
+            scoreboardBody.innerHTML = '';
+
+            matches.forEach(match => {
+                const matchRow = document.createElement('tr');
+                const matchTimeCell = document.createElement('td');
+                matchTimeCell.id = `match-time-${match.id}`;
+                matchTimeCell.innerText = match.time;
+                matchTimeCell.setAttribute('rowspan', '2');
+
+                const team1NameCell = document.createElement('td');
+                team1NameCell.id = `team1-name-${match.id}`;
+                team1NameCell.innerText = match.team1Name;
+
+                const team1WinsCell = document.createElement('td');
+                team1WinsCell.id = `team1-wins-${match.id}`;
+                team1WinsCell.innerHTML = `
+                    <div class="wins-digit">${match.team1Wins}</div>
+                `;
+
+                const team1ScoreCell = document.createElement('td');
+                team1ScoreCell.id = `team1-score-${match.id}`;
+                team1ScoreCell.innerHTML = `
+                    <div class="digit">${String(match.team1Score).padStart(2, '0')[0]}</div>
+                    <div class="digit">${String(match.team1Score).padStart(2, '0')[1]}</div>
+                `;
+
+                matchRow.appendChild(matchTimeCell);
+                matchRow.appendChild(team1NameCell);
+                matchRow.appendChild(team1WinsCell);
+                matchRow.appendChild(team1ScoreCell);
+                scoreboardBody.appendChild(matchRow);
+
+                const team2Row = document.createElement('tr');
+                const team2NameCell = document.createElement('td');
+                team2NameCell.id = `team2-name-${match.id}`;
+                team2NameCell.innerText = match.team2Name;
+
+                const team2WinsCell = document.createElement('td');
+                team2WinsCell.id = `team2-wins-${match.id}`;
+                team2WinsCell.innerHTML = `
+                    <div class="wins-digit">${match.team2Wins}</div>
+                `;
+
+                const team2ScoreCell = document.createElement('td');
+                team2ScoreCell.id = `team2-score-${match.id}`;
+                team2ScoreCell.innerHTML = `
+                    <div class="digit">${String(match.team2Score).padStart(2, '0')[0]}</div>
+                    <div class="digit">${String(match.team2Score).padStart(2, '0')[1]}</div>
+                `;
+
+                team2Row.appendChild(team2NameCell);
+                team2Row.appendChild(team2WinsCell);
+                team2Row.appendChild(team2ScoreCell);
+                scoreboardBody.appendChild(team2Row);
+            });
         }
 
         const ws = new WebSocket('ws://localhost:3001');
 
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            updateScore('team1-score', data.team1);
-            updateScore('team2-score', data.team2);
-            updateName('team1-name', data.team1Name);
-            updateName('team2-name', data.team2Name);
-            updateWins('team1-wins', data.team1Wins);
-            updateWins('team2-wins', data.team2Wins);
+            matches = JSON.parse(event.data);
+            renderMatches();
         };
 
         ws.onopen = () => {

@@ -8,52 +8,96 @@
 </head>
 <body>
     <h1>Admin Panel</h1>
-    <div id="login-section">
+    <div id="login-section" class="card">
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <button onclick="login()">Login</button>
+            <button class="btn" onclick="login()">Login</button>
         </div>
     </div>
     <div id="admin-section" style="display:none;">
-        <div class="teams-container">
-            <div class="team">
-                <div class="team-name">
-                    <input type="text" id="team1-name-input" value="隊伍1" onchange="setTeamName('team1')" />
-                </div>
-                <div class="score-control">
-                    <button onclick="updateScore('team1', -1)">-</button>
-                    <input type="number" id="team1-score" value="0" onchange="setScore('team1')" />
-                    <button onclick="updateScore('team1', 1)">+</button>
-                </div>
-                <div class="wins-control">
-                    勝場數：
-                    <button onclick="updateWins('team1', -1)">-</button>
-                    <input type="number" id="team1-wins" value="0" onchange="setWins('team1')" />
-                    <button onclick="updateWins('team1', 1)">+</button>
-                </div>
-            </div>
-            <div class="team">
-                <div class="team-name">
-                    <input type="text" id="team2-name-input" value="隊伍2" onchange="setTeamName('team2')" />
-                </div>
-                <div class="score-control">
-                    <button onclick="updateScore('team2', -1)">-</button>
-                    <input type="number" id="team2-score" value="0" onchange="setScore('team2')" />
-                    <button onclick="updateScore('team2', 1)">+</button>
-                </div>
-                <div class="wins-control">
-                    勝場數：
-                    <button onclick="updateWins('team2', -1)">-</button>
-                    <input type="number" id="team2-wins" value="0" onchange="setWins('team2')" />
-                    <button onclick="updateWins('team2', 1)">+</button>
-                </div>
+        <div class="card">
+            <div class="form-group">
+                <label for="new-match-team1">隊伍1名稱:</label>
+                <input type="text" id="new-match-team1" required>
+                <label for="new-match-team2">隊伍2名稱:</label>
+                <input type="text" id="new-match-team2" required>
+                <label for="match-start-time">比賽開始時間:</label>
+                <input type="time" id="match-start-time" required>
+                <label for="match-end-time">比賽結束時間:</label>
+                <input type="time" id="match-end-time" required>
+                <button class="btn" onclick="addMatch()">新增比賽</button>
             </div>
         </div>
-        <button onclick="resetScores()">Reset Scores</button>
+        <div class="card">
+            <h2>比賽列表</h2>
+            <ul id="matches-list" class="list-group">
+                <!-- 比賽列表 -->
+            </ul>
+        </div>
+        <div id="scoring-section" class="card" style="display:none;">
+            <h2>比賽計分</h2>
+            <input type="hidden" id="match-id" value="">
+            <div class="form-group">
+                <label for="edit-match-start-time">修改開始時間:</label>
+                <input type="time" id="edit-match-start-time">
+                <label for="edit-match-end-time">修改結束時間:</label>
+                <input type="time" id="edit-match-end-time">
+                <button class="btn" onclick="editMatchTime()">修改時間</button>
+                <button class="btn" onclick="deleteMatch()">刪除比賽</button>
+            </div>
+            <div class="teams-container">
+                <div class="team">
+                    <div class="team-name">
+                        <label for="team1-name-input">隊伍1名稱</label>
+                        <input type="text" id="team1-name-input" value="隊伍1" onchange="setTeamName('team1')" />
+                    </div>
+                    <div class="score-control">
+                        <label for="team1-score">隊伍1分數</label>
+                        <div class="score-buttons">
+                            <button class="btn" onclick="updateScore('team1', -1)">-</button>
+                            <input type="number" id="team1-score" value="0" onchange="setScore('team1')" />
+                            <button class="btn" onclick="updateScore('team1', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="wins-control">
+                        <label for="team1-wins">勝場數</label>
+                        <div class="score-buttons">
+                            <button class="btn" onclick="updateWins('team1', -1)">-</button>
+                            <input type="number" id="team1-wins" value="0" onchange="setWins('team1')" />
+                            <button class="btn" onclick="updateWins('team1', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="team">
+                    <div class="team-name">
+                        <label for="team2-name-input">隊伍2名稱</label>
+                        <input type="text" id="team2-name-input" value="隊伍2" onchange="setTeamName('team2')" />
+                    </div>
+                    <div class="score-control">
+                        <label for="team2-score">隊伍2分數</label>
+                        <div class="score-buttons">
+                            <button class="btn" onclick="updateScore('team2', -1)">-</button>
+                            <input type="number" id="team2-score" value="0" onchange="setScore('team2')" />
+                            <button class="btn" onclick="updateScore('team2', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="wins-control">
+                        <label for="team2-wins">勝場數</label>
+                        <div class="score-buttons">
+                            <button class="btn" onclick="updateWins('team2', -1)">-</button>
+                            <input type="number" id="team2-wins" value="0" onchange="setWins('team2')" />
+                            <button class="btn" onclick="updateWins('team2', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn" onclick="resetScores()">Reset Scores</button>
+        </div>
     </div>
 
     <script>
+        let matches = [];
         let currentPassword = '';
 
         document.getElementById('password').addEventListener('keypress', function(event) {
@@ -64,174 +108,213 @@
 
         async function login() {
             currentPassword = document.getElementById('password').value;
-            const response = await fetch('/api/scores');
+            const response = await fetch('/api/matches');
             if (response.ok) {
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('admin-section').style.display = 'block';
-                fetchScores();
+                matches = await response.json();
+                renderMatches();
             } else {
                 alert('Login failed. Please check your password.');
             }
         }
 
-        async function fetchScores() {
+        function renderMatches() {
+            const matchesList = document.getElementById('matches-list');
+            matchesList.innerHTML = '';
+
+            matches.forEach(match => {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item');
+                li.innerText = `${match.team1Name} vs ${match.team2Name}`;
+                li.onclick = () => selectMatch(match.id);
+                matchesList.appendChild(li);
+            });
+        }
+
+        function selectMatch(matchId) {
+            const match = matches.find(m => m.id === matchId);
+            if (match) {
+                document.getElementById('team1-name-input').value = match.team1Name;
+                document.getElementById('team2-name-input').value = match.team2Name;
+                document.getElementById('team1-score').value = match.team1Score;
+                document.getElementById('team2-score').value = match.team2Score;
+                document.getElementById('team1-wins').value = match.team1Wins;
+                document.getElementById('team2-wins').value = match.team2Wins;
+                document.getElementById('match-id').value = match.id;
+                document.getElementById('edit-match-start-time').value = match.time.split(' - ')[0];
+                document.getElementById('edit-match-end-time').value = match.time.split(' - ')[1];
+                document.getElementById('scoring-section').style.display = 'block';
+            }
+        }
+
+        function formatTime(time) {
+            const [hour, minute] = time.split(':');
+            const date = new Date();
+            date.setHours(hour);
+            date.setMinutes(minute);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function addMatch() {
+            const team1Name = document.getElementById('new-match-team1').value;
+            const team2Name = document.getElementById('new-match-team2').value;
+            const startTime = document.getElementById('match-start-time').value;
+            const endTime = document.getElementById('match-end-time').value;
+
+            const newMatch = {
+                id: Date.now(),
+                team1Name,
+                team2Name,
+                team1Score: 0,
+                team2Score: 0,
+                team1Wins: 0,
+                team2Wins: 0,
+                time: `${formatTime(startTime)} - ${formatTime(endTime)}`
+            };
+
+            matches.push(newMatch);
+
+            await updateMatches();
+            renderMatches();
+        }
+
+        async function editMatchTime() {
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
+            const startTime = document.getElementById('edit-match-start-time').value;
+            const endTime = document.getElementById('edit-match-end-time').value;
+
+            if (match) {
+                match.time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+                await updateMatches();
+                renderMatches();
+            }
+        }
+
+        async function deleteMatch() {
+            const matchId = parseInt(document.getElementById('match-id').value);
+            matches = matches.filter(m => m.id !== matchId);
+            document.getElementById('scoring-section').style.display = 'none';
+            await updateMatches();
+            renderMatches();
+        }
+
+        async function updateMatches() {
             try {
-                const response = await fetch('/api/scores');
-                const scores = await response.json();
-                document.getElementById('team1-score').value = scores.team1;
-                document.getElementById('team2-score').value = scores.team2;
-                document.getElementById('team1-wins').value = scores.team1Wins;
-                document.getElementById('team2-wins').value = scores.team2Wins;
-                document.getElementById('team1-name-input').value = scores.team1Name;
-                document.getElementById('team2-name-input').value = scores.team2Name;
+                await fetch('/api/matches', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ matches, password: currentPassword })
+                });
             } catch (error) {
-                console.error('Error fetching scores:', error);
+                console.error('Error updating matches:', error);
+                alert('Failed to update matches.');
             }
         }
 
         async function updateScore(team, change) {
-            let currentScore = parseInt(document.getElementById(`${team}-score`).value);
-            currentScore += change;
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
 
-            const body = { password: currentPassword };
-            body[team] = currentScore;
+            if (match) {
+                if (team === 'team1') {
+                    match.team1Score += change;
+                } else {
+                    match.team2Score += change;
+                }
 
-            try {
-                await fetch('/api/scores', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-                document.getElementById(`${team}-score`).value = currentScore;
-            } catch (error) {
-                console.error('Error updating scores:', error);
-                alert('Failed to update scores.');
+                await updateMatches();
+                selectMatch(matchId); // 更新選定的比賽顯示
             }
         }
 
         async function setScore(team) {
-            const newScore = parseInt(document.getElementById(`${team}-score`).value);
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
 
-            const body = { password: currentPassword };
-            body[team] = newScore;
+            if (match) {
+                if (team === 'team1') {
+                    match.team1Score = parseInt(document.getElementById('team1-score').value);
+                } else {
+                    match.team2Score = parseInt(document.getElementById('team2-score').value);
+                }
 
-            try {
-                await fetch('/api/scores', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-            } catch (error) {
-                console.error('Error updating scores:', error);
-                alert('Failed to update scores.');
+                await updateMatches();
+                selectMatch(matchId); // 更新選定的比賽顯示
             }
         }
 
         async function updateWins(team, change) {
-            let currentWins = parseInt(document.getElementById(`${team}-wins`).value);
-            currentWins += change;
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
 
-            const body = { password: currentPassword };
-            body[`${team}Wins`] = currentWins;
+            if (match) {
+                if (team === 'team1') {
+                    match.team1Wins += change;
+                } else {
+                    match.team2Wins += change;
+                }
 
-            try {
-                await fetch('/api/scores', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-                document.getElementById(`${team}-wins`).value = currentWins;
-            } catch (error) {
-                console.error('Error updating wins:', error);
-                alert('Failed to update wins.');
+                await updateMatches();
+                selectMatch(matchId); // 更新選定的比賽顯示
             }
         }
 
         async function setWins(team) {
-            const newWins = parseInt(document.getElementById(`${team}-wins`).value);
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
 
-            const body = { password: currentPassword };
-            body[`${team}Wins`] = newWins;
+            if (match) {
+                if (team === 'team1') {
+                    match.team1Wins = parseInt(document.getElementById('team1-wins').value);
+                } else {
+                    match.team2Wins = parseInt(document.getElementById('team2-wins').value);
+                }
 
-            try {
-                await fetch('/api/scores', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-            } catch (error) {
-                console.error('Error updating wins:', error);
-                alert('Failed to update wins.');
+                await updateMatches();
+                selectMatch(matchId); // 更新選定的比賽顯示
             }
         }
 
         async function setTeamName(team) {
-            const newName = document.getElementById(`${team}-name-input`).value;
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
 
-            const body = { password: currentPassword };
-            body[`${team}Name`] = newName;
+            if (match) {
+                if (team === 'team1') {
+                    match.team1Name = document.getElementById('team1-name-input').value;
+                } else {
+                    match.team2Name = document.getElementById('team2-name-input').value;
+                }
 
-            try {
-                await fetch('/api/scores', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-            } catch (error) {
-                console.error('Error updating team name:', error);
-                alert('Failed to update team name.');
+                await updateMatches();
+                selectMatch(matchId); // 更新選定的比賽顯示
             }
         }
 
         async function resetScores() {
-            try {
-                await fetch('/api/scores', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        team1: 0,
-                        team2: 0,
-                        team1Wins: 0,
-                        team2Wins: 0,
-                        team1Name: "隊伍1",
-                        team2Name: "隊伍2",
-                        password: currentPassword
-                    })
-                });
-                document.getElementById('team1-score').value = 0;
-                document.getElementById('team2-score').value = 0;
-                document.getElementById('team1-wins').value = 0;
-                document.getElementById('team2-wins').value = 0;
-                document.getElementById('team1-name-input').value = "隊伍1";
-                document.getElementById('team2-name-input').value = "隊伍2";
-            } catch (error) {
-                console.error('Error resetting scores:', error);
-                alert('Failed to reset scores.');
+            const matchId = parseInt(document.getElementById('match-id').value);
+            const match = matches.find(m => m.id === matchId);
+
+            if (match) {
+                match.team1Score = 0;
+                match.team2Score = 0;
+                match.team1Wins = 0;
+                match.team2Wins = 0;
+
+                await updateMatches();
+                selectMatch(matchId); // 更新選定的比賽顯示
             }
         }
 
         const ws = new WebSocket('ws://localhost:3001');
 
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            document.getElementById('team1-score').value = data.team1;
-            document.getElementById('team2-score').value = data.team2;
-            document.getElementById('team1-wins').value = data.team1Wins;
-            document.getElementById('team2-wins').value = data.team2Wins;
-            document.getElementById('team1-name-input').value = data.team1Name;
-            document.getElementById('team2-name-input').value = data.team2Name;
+            matches = JSON.parse(event.data);
+            renderMatches();
         };
 
         ws.onopen = () => {
