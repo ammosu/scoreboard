@@ -328,7 +328,8 @@
             document.getElementById('match-modal').style.display = 'none';
         }
 
-        const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${wsProtocol}//${window.location.hostname}:3001`);
 
         ws.onmessage = (event) => {
             matches = JSON.parse(event.data);
