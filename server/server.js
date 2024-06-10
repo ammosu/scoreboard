@@ -6,11 +6,12 @@ const path = require('path');
 const WebSocket = require('ws');
 
 const app = express();
-const port = 3000;
-const wsPort = 3001;
+const port = process.env.PORT || 3000;
+const wsPort = process.env.WS_PORT || 3001;
+
 
 const matchesFilePath = path.join(__dirname, 'data', 'matches.json');
-const adminPassword = "admin123"; // 簡單的靜態密碼，僅示範用途
+const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
 app.use(cors());
 app.use(bodyParser.json());

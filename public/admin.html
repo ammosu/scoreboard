@@ -328,7 +328,7 @@
             document.getElementById('match-modal').style.display = 'none';
         }
 
-        const ws = new WebSocket('ws://localhost:3001');
+        const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
 
         ws.onmessage = (event) => {
             matches = JSON.parse(event.data);
