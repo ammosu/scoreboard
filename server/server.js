@@ -1,17 +1,16 @@
 const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const WebSocket = require('ws');
 
 const app = express();
 const port = process.env.PORT || 7860;
-const wsPort = process.env.WS_PORT || 3001;
-
+const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
 const matchesFilePath = path.join(__dirname, 'data', 'matches.json');
-const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -43,7 +42,7 @@ app.post('/api/matches', (req, res) => {
             return;
         }
 
-        notifyClients(matches); // 通知所有客戶端
+        notifyClients(matches);
         res.sendStatus(200);
     });
 });
@@ -79,7 +78,7 @@ app.post('/api/scores', (req, res) => {
                     return;
                 }
 
-                notifyClients(matches); // 通知所有客戶端
+                notifyClients(matches);
                 res.sendStatus(200);
             });
         } else {
@@ -88,11 +87,11 @@ app.post('/api/scores', (req, res) => {
     });
 });
 
-const server = app.listen(port, () => {
-    console.log(`Scoreboard server running at http://localhost:${port}`);
-});
+// 創建 HTTP 伺服器
+const server = http.createServer(app);
 
-const wss = new WebSocket.Server({ port: wsPort });
+// 創建 WebSocket 伺服器並綁定到相同的 HTTP 伺服器
+const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
     console.log('New WebSocket connection');
@@ -101,6 +100,14 @@ wss.on('connection', (ws) => {
             ws.send(data);
         }
     });
+
+    ws.on('message', (message) => {
+        console.log(`Received message => ${message}`);
+    });
+});
+
+server.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
 });
 
 function notifyClients(matches) {
